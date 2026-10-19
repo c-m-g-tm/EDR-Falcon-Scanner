@@ -16,7 +16,7 @@ Hinweis: WMI-Ereignisse brauchen Administratorrechte, sonst startet der Watcher 
 Zusammenfassung - Inhalt des Programmes
 1. Sensoren (Überwachung)
 
-BereichUmsetzungDateiProzesse (primär)ETW-Kernel-Provider (Process + FileIO Keywords, TraceEvent)Services/EtwMonitor.csProzesse (Fallback)WMI __InstanceCreationEvent auf Win32_ProcessServices/ProcessMonitor.csDateisystemFileSystemWatcher Dokumente/Desktop/Bilder, Ransomware-Burst + Endungs-/Note-HeuristikServices/FileSystemMonitor.csNetzwerkGetExtendedTcpTable mit PID-Zuordnung, alle 5 s, Loopback/Listener gefiltertServices/TcpTableReader.cs, NetworkMonitor.csRegistryAutostart-Schlüssel (Run/RunOnce HKCU/HKLM), alle 5 sServices/RegistryMonitor.cs
+Bereich Umsetzung Datei Prozesse (primär)ETW-Kernel-Provider (Process + FileIO Keywords, TraceEvent)Services/EtwMonitor.csProzesse (Fallback)WMI __InstanceCreationEvent auf Win32_ProcessServices/ProcessMonitor.csDateisystemFileSystemWatcher Dokumente/Desktop/Bilder, Ransomware-Burst + Endungs-/Note-HeuristikServices/FileSystemMonitor.csNetzwerkGetExtendedTcpTable mit PID-Zuordnung, alle 5 s, Loopback/Listener gefiltertServices/TcpTableReader.cs, NetworkMonitor.csRegistryAutostart-Schlüssel (Run/RunOnce HKCU/HKLM), alle 5 sServices/RegistryMonitor.cs
 2. Detektion
 
     Eingebaute Heuristik (Services/RuleEngine.cs): CommandLine-Muster, verdächtige Pfade (TEMP/Downloads/Public/ProgramData), Namens-Maskerade, doppelte Endungen, Office→Shell/Parent-Child
