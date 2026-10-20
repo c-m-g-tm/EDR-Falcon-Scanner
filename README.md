@@ -51,3 +51,42 @@ Bereich Umsetzung Datei Prozesse (primär)ETW-Kernel-Provider (Process + FileIO 
 Zukunft
 
 Noch offen (diskutiert, nicht umgesetzt): Cloud-Zentralserver/Multi-Host-Management, Alert-Triage-Workflow (Status/Zuweisung/Kommentare), YARA-Speicherscan, AMSI-Konsument, Kernel-Minifilter, echter Windows-Dienst. 
+
+Zusammenfassung Version 2
+
+MiniFalconEDR — Funktionsumfang
+Ein Falcon-ähnlicher EDR-Agent in C#/WPF (net8.0-windows), deutschsprachige Oberfläche, bestehend aus GUI-App + echtem Windows-Dienst. Punkt 5 (zentrale Multi-Host-Konsole) wurde bewusst weggelassen.
+
+Sensoren / Erkennung
+ETW-Prozess-Sensor mit WMI-Fallback (EtwMonitor) — Prozessstart-Überwachung.
+ProcessInspector / Hasher / SignatureChecker — Pfad, SHA256, Authenticode-Signatur/Signer, Elternprozess.
+RuleEngine — ~35 Kommandozeilen-/Verhaltensregeln mit MITRE-Techniken, Maskerade-, Doppelendungs- und verdächtige-Pfad-Erkennung.
+SigmaEngine + 5 YAML-Regeln in rules\ (Firewall-Disable, Netzwerk-Download, Office→Shell, PowerShell Encoded, Shadow-Copy-Deletion).
+FileSystemMonitor — Ransomware-Burst-Erkennung (Endungs-/Notiz-Muster, Debounce).
+NetworkMonitor + TcpTableReader — Verbindungen mit PID-Zuordnung.
+RegistryMonitor — Autostart-/Run-Key-Überwachung.
+FileIntegrityMonitor (FIM) — SHA256-Baseline + Abgleich NEU/GEAENDERT/GELOESCHT.
+DeviceMonitor — USB-Speichergeräte-Erkennung + optionale Sperre.
+ExclusionList — Ausnahmen, erzwingt Selbstschutz der eigenen Binaries.
+AttackMap — 35 ATT&CK-Techniken + Matrix-Tab.
+Schutz / Reaktion
+Prozess-Eliminierung bei Critical/Blocklist-Treffer.
+QuarantineVault — AES-256-GCM/DPAPI, Restore/Verify/Delete.
+ContainmentService — Netzwerk-Isolation per netsh (Gruppe MiniFalconEDR-Containment).
+Blocklist (IOC/Hash) — JSON-basiert, Typ auto-erkannt (SHA256/Pfad/Prozessname), Treffer = KRITISCH + Kill + Quarantäne.
+Audit / Compliance
+AuditLogger — SHA256-Hash-Kette, VerifyAll prüft alle Logs; getrennte Dateien: GUI audit.log, Dienst audit-service.log (verhindert Kettenbruch).
+ReportExporter — Export als CSV (Semikolon, UTF-8 BOM) und druckfertiger HTML-Report.
+Betrieb
+Windows-Dienst (MiniFalconEDR.Service) — headless, dieselben Sensoren + Watchdog (restartet ausgefallene Sensoren alle 15 s), Install/Start/Stop per sc.exe.
+Absturz-Watchdog im GUI (--watchdog <pid> <exe>, Neustart nur bei Absturz).
+--selfcheck — gefahrlose Diagnose ohne Monitoraktivität.
+Dashboard — 6 Rundzeiger (Risiko-Index, Critical, Warning, Sigma, Blocked, Rate) via eigenem Gauge-Control.
+Tabs in der GUI
+Dashboard · Sicherheit/Audit · ATT&CK-Matrix · Prozessbaum · FIM-Timeline · Geräte (USB) · Blockliste · Systemstatus (Dienststeuerung + Watchdog).
+
+Persistenz
+%ProgramData%\MiniFalconEDR\ → audit.log, audit-service.log, blocklist.json, fim-baseline.json, quarantine\; Fallback: AppContext.BaseDirectory.
+
+Status
+Build 0 Fehler / 0 Warnungen; GUI-Start, Dienst-Laufzeit (16 s) und Selfcheck verifiziert. Adminrechte nötig für: WMI, USB-Sperre, sc.exe, Containment.
