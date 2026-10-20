@@ -2,6 +2,8 @@
 
 EDR Scanner (Crownstrike) Beta Windows Version by (c) www.c-m-g.de  Meier Thomas
 
+<h1>NEW: Jetzt mit setup.exe Installer</h1>
+
  NORMAL ist im Code das Standard-Risiko-Level (riskLevel = "NORMAL") für jeden Prozess, der keine Heuristik-Regel trifft — also ein ganz gewöhnlicher Programmstart ohne Auffälligkeit. Erst wenn eine Regel zutrifft, wird der Wert überschrieben:
 
     NORMAL — unverdächtiger Prozess (z. B. notepad.exe)
